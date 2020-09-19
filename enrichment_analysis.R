@@ -16,8 +16,7 @@ modgenes_df <- rbindlist(all_genes_in_path)
 modgenes_df$path_name = names(modGenes)
 colnames(modgenes_df)[1] <- "all_genes_in_path"
 
-#fwrite(file = paste0("/labs/khatrilab/scottmk/Cite-Seq/csvs/all_BTM_paths.csv"), modgenes_df)
-
+                           
 BTMIDs = names(modGenes)
 modgenes_df$path_name[grep("M85",modgenes_df$path_name)]
 m150  = modgenes_df$all_genes_in_path[modgenes_df$path_name == "platelet activation & blood coagulation (M199)"]
@@ -26,7 +25,7 @@ m150  = modgenes_df$all_genes_in_path[modgenes_df$path_name == "platelet activat
 all_Genes <- rownames(srt@assays$RNA@data)
 
 # load in the degs
-genes_interest <- fread("/labs/khatrilab/scottmk/covid/csvs/covall_DEG_severemod_healthy_MALE_percluster_wilcox_fc25.csv")
+genes_interest <- fread("~/DEG.csv")
 
 # subset to severe-mod vs healthy
 genes_interest <- genes_interest[grep("severe",genes_interest$comp),]
@@ -34,7 +33,10 @@ genes_interest <- genes_interest[grep("severe",genes_interest$comp),]
 #take sig
 genes_interest <- genes_interest[which(genes_interest$p_val < 0.05),]
 
-
+# throwing a lot of immunoglobulin genes
+                           # likely because all the plasmablasts are exploding
+                           # dumping all their RNA on all the cells
+                           # plasmablasts have A LOT of RNA
 #genes_interest <- genes_interest[-grep("^IG", genes_interest$gene),]
 
 gene_de_list <- split(as.data.table(genes_interest), by = "clust")
@@ -104,6 +106,7 @@ scoregenes <- unlist(strsplit(as.character(pthgenes_df$all_genes_in_path[which_g
 #### Rearranging
 # I got this code online and modified it
 # I will post a link to the source code when I track it down
+# makes pretty ring plots
 spot.theme_2 <- list(
   theme_classic(),
   theme(axis.ticks.y=element_blank(), axis.text.y=element_text(size = 10)),
@@ -130,7 +133,7 @@ all_down_enrich$p_inv <- -all_down_enrich$p_inv
 
 all_up_enrich <- rbind(all_up_enrich, all_down_enrich)
 all_up_enrich$pct_in <- all_up_enrich$relevant.genes/all_up_enrich$filtered.size
-# drop unnamed clusters
+# drop unnamed pathways
 all_up_enrich <- all_up_enrich[-grep("TBA", all_up_enrich$set.name),]
 unique(all_up_enrich$clust)
 
