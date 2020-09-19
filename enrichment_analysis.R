@@ -24,8 +24,8 @@ m150  = modgenes_df$all_genes_in_path[modgenes_df$path_name == "platelet activat
 ### world of genes
 all_Genes <- rownames(srt@assays$RNA@data)
 
-# load in the degs
-genes_interest <- fread("~/DEG.csv")
+# load in the degs from markerfinder
+genes_interest <- fread("deg_list_wilcox_fc25_pct25.csv")
 
 # subset to severe-mod vs healthy
 genes_interest <- genes_interest[grep("severe",genes_interest$comp),]
